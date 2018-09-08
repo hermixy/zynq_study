@@ -70,3 +70,7 @@ bd/cpu/sim/
 bd/cpu/synth/
 bd/cpu/ui/
 
+# sdk忽略文件
+.metadata
+RemoteSystemsTempFiles
+Debug
