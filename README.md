@@ -8,8 +8,8 @@
 
 
 # 例子
-- [ ] [hello_world]()
-- [ ] [PS控制 MIO]()
+- [x] [hello_world](https://github.com/kdurant/zynq_study/tree/master/hello_world)
+- [x] [PS控制 MIO]()
 - [ ] [PS控制PL侧EMIO]()
 - [ ] [PS控制PL侧GPIO]()
 
@@ -17,4 +17,7 @@
 - [ ] [PS和PL通过FIFO交互]()
 - [ ] [PS和PL通过BRAM交互]()
 - [ ] [PL读写PS侧DDR]()
+
+# 常见错误
+1. "Error while running ps7_init method"
 
