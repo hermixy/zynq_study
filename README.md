@@ -9,9 +9,15 @@
 
 # 例子
 - [x] [hello_world](https://github.com/kdurant/zynq_study/tree/master/hello_world)
-- [x] [PS控制 MIO]()
-- [ ] [PS控制PL侧EMIO]()
+
+- [x] [PS控制 MIO](https://github.com/kdurant/zynq_study/tree/master/mio)
+- [ ] [PS控制PL侧EMIO](https://github.com/kdurant/zynq_study/tree/master/ps_emio)
 - [ ] [PS控制PL侧GPIO]()
+
+> 注意EMIO和GPIO的区别：
+>
+>
+>
 
 - [ ] [PS读取PL中断]()
 - [ ] [PS和PL通过FIFO交互]()

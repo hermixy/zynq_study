@@ -38,19 +38,17 @@
 *******************************************************************/
 
 #include "xparameters.h"
-#include "xgpio.h"
+#include "xgpiops.h"
 
 /*
 * The configuration table for devices
 */
 
-XGpio_Config XGpio_ConfigTable[XPAR_XGPIO_NUM_INSTANCES] =
+XGpioPs_Config XGpioPs_ConfigTable[XPAR_XGPIOPS_NUM_INSTANCES] =
 {
 	{
-		XPAR_AXI_GPIO_0_DEVICE_ID,
-		XPAR_AXI_GPIO_0_BASEADDR,
-		XPAR_AXI_GPIO_0_INTERRUPT_PRESENT,
-		XPAR_AXI_GPIO_0_IS_DUAL
+		XPAR_PS7_GPIO_0_DEVICE_ID,
+		XPAR_PS7_GPIO_0_BASEADDR
 	}
 };
 

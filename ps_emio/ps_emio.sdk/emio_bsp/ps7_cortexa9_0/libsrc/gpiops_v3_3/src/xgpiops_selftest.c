@@ -1,6 +1,6 @@
 /******************************************************************************
 *
-* Copyright (C) 2002 - 2014 Xilinx, Inc.  All rights reserved.
+* Copyright (C) 2010 - 2015 Xilinx, Inc.  All rights reserved.
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -31,34 +31,33 @@
 ******************************************************************************/
 /*****************************************************************************/
 /**
-* @file xgpio_selftest.c
-* @addtogroup gpio_v4_2
+*
+* @file xgpiops_selftest.c
+* @addtogroup gpiops_v3_3
 * @{
 *
-* The implementation of the XGpio driver's self test function.
-* See xgpio.h for more information about the driver.
+* This file contains a diagnostic self-test function for the XGpioPs driver.
 *
-* @note
-*
-* None
+* Read xgpiops.h file for more information.
 *
 * <pre>
 * MODIFICATION HISTORY:
 *
 * Ver   Who  Date     Changes
 * ----- ---- -------- -----------------------------------------------
-* 1.00a rmm  02/04/02 First release
-* 2.00a jhl  01/13/04 Addition of dual channels and interrupts.
-* 2.11a mta  03/21/07 Updated to new coding style
-* 3.00a sv   11/21/09 Updated to use HAL Processor APIs.
+* 1.00a sv   01/18/10 First Release
+* 3.00  kvn  02/13/15 Modified code for MISRA-C:2012 compliance.
 * </pre>
 *
 *****************************************************************************/
 
 /***************************** Include Files ********************************/
-#include "xgpio.h"
+
+#include "xstatus.h"
+#include "xgpiops.h"
 
 /************************** Constant Definitions ****************************/
+
 
 /**************************** Type Definitions ******************************/
 
@@ -68,43 +67,67 @@
 
 /************************** Function Prototypes *****************************/
 
-
-/******************************************************************************/
+/*****************************************************************************/
 /**
-* Run a self-test on the driver/device. This function does a minimal test
-* in which the data register is read. It only does a read without any kind
-* of test because the hardware has been parameterized such that it may be only
-* an input such that the state of the inputs won't be known.
 *
-* All other hardware features of the device are not guaranteed to be in the
-* hardware since they are parameterizable.
+* This function runs a self-test on the GPIO driver/device. This function
+* does a register read/write test on some of the Interrupt Registers.
 *
+* @param	InstancePtr is a pointer to the XGpioPs instance.
 *
-* @param	InstancePtr is a pointer to the XGpio instance to be worked on.
-*		This parameter must have been previously initialized with
-*		XGpio_Initialize().
+* @return
+*		- XST_SUCCESS if the self-test passed.
+* 		- XST_FAILURE otherwise.
 *
-* @return 	XST_SUCCESS always. If the GPIO device was not present in the
-*		hardware a bus error could be generated. Other indicators of a
-*		bus error, such as registers in bridges or buses, may be
-*		necessary to determine if this function caused a bus error.
-*
-* @note		None.
 *
 ******************************************************************************/
-int XGpio_SelfTest(XGpio * InstancePtr)
+s32 XGpioPs_SelfTest(XGpioPs *InstancePtr)
 {
+	s32 Status = XST_SUCCESS;
+	u32 IntrEnabled;
+	u32 CurrentIntrType = 0U;
+	u32 CurrentIntrPolarity = 0U;
+	u32 CurrentIntrOnAny = 0U;
+	u32 IntrType = 0U;
+	u32 IntrPolarity = 0U;
+	u32 IntrOnAny = 0U;
+	u32 IntrTestValue = 0x22U;
+
 	Xil_AssertNonvoid(InstancePtr != NULL);
 	Xil_AssertNonvoid(InstancePtr->IsReady == XIL_COMPONENT_IS_READY);
 
-	/*
-	 * Read from the data register of channel 1 which is always guaranteed
-	 * to be in the hardware device. Since the data may be configured as
-	 * all inputs, there is not way to guarantee the value read so don't
-	 * test it.
-	 */
-	(void) XGpio_DiscreteRead(InstancePtr, 1);
+	/* Disable the Interrupts for Bank 0 . */
+	IntrEnabled = XGpioPs_IntrGetEnabled(InstancePtr, XGPIOPS_BANK0);
+	XGpioPs_IntrDisable(InstancePtr, XGPIOPS_BANK0, IntrEnabled);
 
-	return (XST_SUCCESS);
+	/*
+	 * Get the Current Interrupt properties for Bank 0.
+	 * Set them to a known value, read it back and compare.
+	 */
+	XGpioPs_GetIntrType(InstancePtr, XGPIOPS_BANK0, &CurrentIntrType,
+			     &CurrentIntrPolarity, &CurrentIntrOnAny);
+
+	XGpioPs_SetIntrType(InstancePtr, XGPIOPS_BANK0, IntrTestValue,
+			     IntrTestValue, IntrTestValue);
+
+	XGpioPs_GetIntrType(InstancePtr, XGPIOPS_BANK0, &IntrType,
+			     &IntrPolarity, &IntrOnAny);
+
+	if ((IntrType != IntrTestValue) && (IntrPolarity != IntrTestValue) &&
+	    (IntrOnAny != IntrTestValue)) {
+
+		Status = XST_FAILURE;
+	}
+
+	/*
+	 * Restore the contents of all the interrupt registers modified in this
+	 * test.
+	 */
+	XGpioPs_SetIntrType(InstancePtr, XGPIOPS_BANK0, CurrentIntrType,
+			     CurrentIntrPolarity, CurrentIntrOnAny);
+
+	XGpioPs_IntrEnable(InstancePtr, XGPIOPS_BANK0, IntrEnabled);
+
+	return Status;
 }
 /** @} */

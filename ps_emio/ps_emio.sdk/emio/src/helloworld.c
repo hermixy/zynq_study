@@ -49,28 +49,32 @@
 #include "platform.h"
 #include "xil_printf.h"
 
-#include "xparameters.h"
-#include "xgpio.h"
-/************************** Variable Defintions ******************************/
-/* Instance For GPIO */
-XGpio GpioOutput;
-int main(void)
+#include "xgpiops.h"
+#include "sleep.h"
+int main()
 {
-	u32 Delay;
-	u32 Ledwidth;
-	init_platform();
-	XGpio_Initialize(&GpioOutput, XPAR_AXI_GPIO_0_DEVICE_ID); //initialize GPIO IP
-	XGpio_SetDataDirection(&GpioOutput, 1, 0x0); //set GPIO as output
-	XGpio_DiscreteWrite(&GpioOutput, 1, 0x0); //set GPIO output value to 0
-	while (1)
+	static XGpioPs psGpioInstancePtr;
+	XGpioPs_Config* GpioConfigPtr;
+	int iPinNumber= 54; //想想为什么是 54
+	u32 uPinDirection = 0x1; //1 表示输出， 0 表示输入
+	int xStatus;
+	//--MIO 的初始化
+	GpioConfigPtr = XGpioPs_LookupConfig(XPAR_PS7_GPIO_0_DEVICE_ID);
+	if(GpioConfigPtr == NULL)
+	return XST_FAILURE;
+	xStatus = XGpioPs_CfgInitialize(&psGpioInstancePtr,GpioConfigPtr,
+	GpioConfigPtr->BaseAddr);
+	if(XST_SUCCESS != xStatus)
+	print(" PS GPIO INIT FAILED \n\r");
+	//--MIO 的输入输出操作
+	XGpioPs_SetDirectionPin(&psGpioInstancePtr, iPinNumber,uPinDirection);//	配置 IO 输出方向
+	XGpioPs_SetOutputEnablePin(&psGpioInstancePtr, iPinNumber,1);//配置 IO	的输出
+	while(1)
 	{
-		for (Ledwidth = 0x0; Ledwidth < 4; Ledwidth++)
-		{
-			XGpio_DiscreteWrite(&GpioOutput, 1, 1 << Ledwidth);
-			for (Delay = 0; Delay < 8000000; Delay++);
-			XGpio_DiscreteClear(&GpioOutput, 1, 1 << Ledwidth);
-		}
+		XGpioPs_WritePin(&psGpioInstancePtr, iPinNumber, 1);//输出 1
+		sleep(1);//延时
+		XGpioPs_WritePin(&psGpioInstancePtr, iPinNumber, 0);//输出 0
+		sleep(1);//延时
 	}
-	cleanup_platform();
 	return 0;
 }

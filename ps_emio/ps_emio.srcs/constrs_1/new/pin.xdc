@@ -1,7 +1,7 @@
-set_property -dict {PACKAGE_PIN M14 IOSTANDARD LVCMOS33} [get_ports led_4b_tri_o[0]] 
-set_property -dict {PACKAGE_PIN M15 IOSTANDARD LVCMOS33} [get_ports led_4b_tri_o[1]] 
-set_property -dict {PACKAGE_PIN K16 IOSTANDARD LVCMOS33} [get_ports led_4b_tri_o[2]] 
-set_property -dict {PACKAGE_PIN J16 IOSTANDARD LVCMOS33} [get_ports led_4b_tri_o[3]] 
+set_property -dict {PACKAGE_PIN M14 IOSTANDARD LVCMOS33} [get_ports GPIO_0_0_tri_io[0]] 
+set_property -dict {PACKAGE_PIN M15 IOSTANDARD LVCMOS33} [get_ports GPIO_0_0_tri_io[1]] 
+set_property -dict {PACKAGE_PIN K16 IOSTANDARD LVCMOS33} [get_ports GPIO_0_0_tri_io[2]] 
+set_property -dict {PACKAGE_PIN J16 IOSTANDARD LVCMOS33} [get_ports GPIO_0_0_tri_io[3]] 
 
 #set_property IOSTANDARD LVCMOS33 [get_ports {led_4b_tri_o[3]}]
 #set_property IOSTANDARD LVCMOS33 [get_ports {led_4b_tri_o[2]}]
