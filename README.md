@@ -24,6 +24,8 @@
 - [ ] [PS和PL通过BRAM交互]()
 - [ ] [PL读写PS侧DDR]()
 
-# 常见错误
+# FAQ
 1. "Error while running ps7_init method"
 
+
+2. AXI interface port /AXI_RD is not associated to any clock port. It may not work correctly. Please update ASSOCIATED_BUSIF parameter of a clock port to include this interface port
