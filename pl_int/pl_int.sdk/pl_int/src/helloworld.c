@@ -133,16 +133,19 @@ int IntcInitFunction(u16 DeviceId, XGpio *GpioInstancePtr)
 	IntcConfig = XScuGic_LookupConfig(DeviceId);
 	status = XScuGic_CfgInitialize(&INTCInst, IntcConfig,
 	IntcConfig->CpuBaseAddress);
-	if(status != XST_SUCCESS) return XST_FAILURE;
+	if(status != XST_SUCCESS)
+		return XST_FAILURE;
 	// Call interrupt setup function
 	status = InterruptSystemSetup(&INTCInst);
-	if(status != XST_SUCCESS) return XST_FAILURE;
+	if(status != XST_SUCCESS)
+		return XST_FAILURE;
 	// Register GPIO interrupt handler
 	status = XScuGic_Connect(&INTCInst,
 	INTC_GPIO_INTERRUPT_ID,
 	(Xil_ExceptionHandler)BTN_Intr_Handler,
 	(void *)GpioInstancePtr);
-	if(status != XST_SUCCESS) return XST_FAILURE;
+	if(status != XST_SUCCESS)
+		return XST_FAILURE;
 	// Enable GPIO interrupts
 	XGpio_InterruptEnable(GpioInstancePtr, 1);
 	XGpio_InterruptGlobalEnable(GpioInstancePtr);
@@ -155,8 +158,8 @@ int InterruptSystemSetup(XScuGic *XScuGicInstancePtr)
 {
 	// Register GIC interrupt handler
 	Xil_ExceptionRegisterHandler(XIL_EXCEPTION_ID_INT,
-	(Xil_ExceptionHandler)XScuGic_InterruptHandler,
-	XScuGicInstancePtr);
+		(Xil_ExceptionHandler)XScuGic_InterruptHandler,
+		XScuGicInstancePtr);
 	Xil_ExceptionEnable();
 	return XST_SUCCESS;
 }

@@ -75,87 +75,91 @@ static int IntcInitFunction(u16 DeviceId, XGpio *GpioInstancePtr);
 //----------------------------------------------------
 void BTN_Intr_Handler(void *InstancePtr)
 {
-unsigned char led_val = 0;
-// Ignore additional button presses
-if ((XGpio_InterruptGetStatus(&BTNInst) & BTN_INT) !=
-BTN_INT) {
-return;
-// Disable GPIO interrupts
-XGpio_InterruptDisable(&BTNInst, BTN_INT);
-}
-btn_value = ~XGpio_DiscreteRead(&BTNInst, 1)&0x0f;
-switch (btn_value){
-case 0x01: led_val = 0x01; break;
-case 0x02: led_val = 0x02; break;
-case 0x04: led_val = 0x04; break;
-case 0x08: led_val = 0x08; break;
-default:break; }
-XGpio_DiscreteWrite(&LED,1,~led_val);
-// Acknowledge GPIO interrupts
-(void)XGpio_InterruptClear(&BTNInst, BTN_INT);
-// Enable GPIO interrupts
-XGpio_InterruptEnable(&BTNInst, BTN_INT);
+	unsigned char led_val = 0;
+	// Ignore additional button presses
+	if ((XGpio_InterruptGetStatus(&BTNInst) & BTN_INT) != BTN_INT) {
+		return;
+		// Disable GPIO interrupts
+		XGpio_InterruptDisable(&BTNInst, BTN_INT);
+	}
+	btn_value = ~XGpio_DiscreteRead(&BTNInst, 1)&0x0f;
+	switch (btn_value)
+	{
+		case 0x01: led_val = 0x01; break;
+		case 0x02: led_val = 0x02; break;
+		case 0x04: led_val = 0x04; break;
+		case 0x08: led_val = 0x08; break;
+		default:break;
+	}
+	XGpio_DiscreteWrite(&LED,1,~led_val);
+	// Acknowledge GPIO interrupts
+	(void)XGpio_InterruptClear(&BTNInst, BTN_INT);
+	// Enable GPIO interrupts
+	XGpio_InterruptEnable(&BTNInst, BTN_INT);
 }
 //----------------------------------------------------
 // MAIN FUNCTION
 //----------------------------------------------------
 int main (void)
 {
-int status;
-// 刜始化挄键
-status = XGpio_Initialize(&BTNInst, BTNS_DEVICE_ID);
-if(status != XST_SUCCESS) return XST_FAILURE;
-//刜始化LED
-status = XGpio_Initialize(&LED, LED_DEVICE_ID);
-if(status != XST_SUCCESS) return XST_FAILURE;
-// 设置挄键IO癿方向为输入
-XGpio_SetDataDirection(&BTNInst, 1, 0xFF);
-//设置LED IO癿方向为输出
-XGpio_SetDataDirection(&LED, 1, 0x00);
-//设置LED 灯熄灭
-XGpio_DiscreteWrite(&LED,1,0x0f);
-// 刜始化挄键癿中断控刢器
-status = IntcInitFunction(INTC_DEVICE_ID, &BTNInst);
-if(status != XST_SUCCESS) return XST_FAILURE;
-while(1){
-}
-return (0);
+	int status;
+	// 刜始化挄键
+	status = XGpio_Initialize(&BTNInst, BTNS_DEVICE_ID);
+	if(status != XST_SUCCESS) return XST_FAILURE;
+	//刜始化LED
+	status = XGpio_Initialize(&LED, LED_DEVICE_ID);
+	if(status != XST_SUCCESS) return XST_FAILURE;
+	// 设置挄键IO癿方向为输入
+	XGpio_SetDataDirection(&BTNInst, 1, 0xFF);
+	//设置LED IO癿方向为输出
+	XGpio_SetDataDirection(&LED, 1, 0x00);
+	//设置LED 灯熄灭
+	XGpio_DiscreteWrite(&LED,1,0x0f);
+	// 刜始化挄键癿中断控刢器
+	status = IntcInitFunction(INTC_DEVICE_ID, &BTNInst);
+	if(status != XST_SUCCESS) return XST_FAILURE;
+	while(1){
+	}
+	return (0);
 }
 //----------------------------------------------------
 // INTERRUPT SETUP FUNCTIONS
 //----------------------------------------------------
 int IntcInitFunction(u16 DeviceId, XGpio *GpioInstancePtr)
 {
-XScuGic_Config *IntcConfig;
-int status;
-// Interrupt controller initialization
-IntcConfig = XScuGic_LookupConfig(DeviceId);
-status = XScuGic_CfgInitialize(&INTCInst, IntcConfig,
-IntcConfig->CpuBaseAddress);
-if(status != XST_SUCCESS) return XST_FAILURE;
-// Call interrupt setup function
-status = InterruptSystemSetup(&INTCInst);
-if(status != XST_SUCCESS) return XST_FAILURE;
-// Register GPIO interrupt handler
-status = XScuGic_Connect(&INTCInst,
-INTC_GPIO_INTERRUPT_ID,
-(Xil_ExceptionHandler)BTN_Intr_Handler,
-(void *)GpioInstancePtr);
-if(status != XST_SUCCESS) return XST_FAILURE;
-// Enable GPIO interrupts
-XGpio_InterruptEnable(GpioInstancePtr, 1);
-XGpio_InterruptGlobalEnable(GpioInstancePtr);
-// Enable GPIO interrupts in the controller
-XScuGic_Enable(&INTCInst, INTC_GPIO_INTERRUPT_ID);
-return XST_SUCCESS;
+	XScuGic_Config *IntcConfig;
+	int status;
+	// Interrupt controller initialization
+	IntcConfig = XScuGic_LookupConfig(DeviceId);
+	status = XScuGic_CfgInitialize(&INTCInst, IntcConfig,
+	IntcConfig->CpuBaseAddress);
+	if(status != XST_SUCCESS)
+		return XST_FAILURE;
+	// Call interrupt setup function
+	status = InterruptSystemSetup(&INTCInst);
+	if(status != XST_SUCCESS)
+		return XST_FAILURE;
+	// Register GPIO interrupt handler
+	status = XScuGic_Connect(&INTCInst,
+	INTC_GPIO_INTERRUPT_ID,
+	(Xil_ExceptionHandler)BTN_Intr_Handler,
+	(void *)GpioInstancePtr);
+	if(status != XST_SUCCESS)
+		return XST_FAILURE;
+	// Enable GPIO interrupts
+	XGpio_InterruptEnable(GpioInstancePtr, 1);
+	XGpio_InterruptGlobalEnable(GpioInstancePtr);
+	// Enable GPIO interrupts in the controller
+	XScuGic_Enable(&INTCInst, INTC_GPIO_INTERRUPT_ID);
+	return XST_SUCCESS;
 }
 
 int InterruptSystemSetup(XScuGic *XScuGicInstancePtr)
 {
-// Register GIC interrupt handler
-Xil_ExceptionRegisterHandler(XIL_EXCEPTION_ID_INT,
-(Xil_ExceptionHandler)XScuGic_InterruptHandler,
-XScuGicInstancePtr);
-Xil_ExceptionEnable();
-return XST_SUCCESS;
+	// Register GIC interrupt handler
+	Xil_ExceptionRegisterHandler(XIL_EXCEPTION_ID_INT,
+		(Xil_ExceptionHandler)XScuGic_InterruptHandler,
+		XScuGicInstancePtr);
+	Xil_ExceptionEnable();
+	return XST_SUCCESS;
 }
