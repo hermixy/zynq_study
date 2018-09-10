@@ -24,7 +24,7 @@
 - [ ] [PS和PL通过BRAM交互]()
 - [ ] [PL读写PS侧DDR]()
 
-- [ ] [自定义AXI4-Lite接口IP]()
+- [ ] [自定义AXI4-Lite接口IP](https://github.com/kdurant/zynq_study/tree/master/user_define_ip)
 
 # FAQ
 1. "Error while running ps7_init method"
