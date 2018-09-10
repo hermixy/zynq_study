@@ -27,6 +27,10 @@
 - [ ] [自定义AXI4-Lite接口IP](https://github.com/kdurant/zynq_study/tree/master/user_define_ip)
 
 # FAQ
+1. 如何使用SDK 中的 Console 窗口显示串口发送的信息?
+`STDIO Connection`中选择**PS配置串口**连接到的`PC串口`。
+> 串口必须连上，只是不需要另外开一个串口调试助手
+
 1. "Error while running ps7_init method"
 
 
