@@ -70,6 +70,6 @@ synth
 # bd/cpu/ui/
 
 # sdk忽略文件
-# .metadata
+.metadata
 RemoteSystemsTempFiles
 Debug
