@@ -48,13 +48,18 @@
 #include <stdio.h>
 #include "platform.h"
 #include "xil_printf.h"
+#include "sleep.h"
 
 
 int main()
 {
     init_platform();
 
-    print("Hello World\n\r");
+    while(1)
+    {
+    	print("Hello World\n\r");
+    	sleep(1);
+    }
 
     cleanup_platform();
     return 0;
