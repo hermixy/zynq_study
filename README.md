@@ -11,7 +11,7 @@
 - [x] [hello_world](https://github.com/kdurant/zynq_study/tree/master/hello_world)
 
 - [x] [PS控制 MIO](https://github.com/kdurant/zynq_study/tree/master/mio)
-- [ ] [PS控制PL侧EMIO](https://github.com/kdurant/zynq_study/tree/master/ps_emio)
+- [x] [PS控制PL侧EMIO](https://github.com/kdurant/zynq_study/tree/master/ps_emio)
 - [ ] [PS控制PL侧GPIO]()
 
 > 注意EMIO和GPIO的区别：
@@ -19,7 +19,7 @@
 >
 >
 
-- [ ] [PS读取PL中断]()
+- [x] [PS读取PL中断](https://github.com/kdurant/zynq_study/tree/master/pl_int)
 - [ ] [PS和PL通过FIFO交互]()
 - [ ] [PS和PL通过BRAM交互]()
 - [ ] [PL读写PS侧DDR]()
