@@ -20,7 +20,7 @@
 >
 
 - [x] [PS读取PL中断](https://github.com/kdurant/zynq_study/tree/master/pl_int)
-- [ ] [PS和PL通过FIFO交互]()
+- [x] [PS和PL通过FIFO交互](https://github.com/kdurant/zynq_study/tree/master/ps_fifo_pl)
 主要是考虑小批量数据通信使用此种交互方式
 ![pic](https://github.com/kdurant/zynq_study/blob/master/image/axi_stream_fifo.png)
 * FCLK_CLK0使用100MHz时，有警告。50MHz，125MHz没有发现警告
@@ -37,15 +37,16 @@
 - [ ] [自定义AXI4-Lite接口IP](https://github.com/kdurant/zynq_study/tree/master/user_define_ip)
 
 # FAQ
-1. 如何使用SDK 中的 Console 窗口显示串口发送的信息?
+1. 如何使用SDK 中的 Console 窗口显示串口发送的信息?         
 `STDIO Connection`中选择**PS配置串口**连接到的`PC串口`。
 > 串口必须连上，只是不需要另外开一个串口调试助手
 
-1. "Error while running ps7_init method"
+2. "Error while running ps7_init method"      
+A: sdk调试
 
 
-2. `AXI interface port /AXI_RD is not associated to any clock port. It may not work correctly. Please update ASSOCIATED_BUSIF parameter of a clock port to include this interface port`
+3. `AXI interface port /AXI_RD is not associated to any clock port. It may not work correctly. Please update ASSOCIATED_BUSIF parameter of a clock port to include this interface port`     
 A: 修改`FCLK_CLK0`为其他时钟，目前100MHz时出现过这个警告
 
 
-3. `apply_bd_automation -rule xilinx.com:bd_rule:processing_system7 -config {make_external "FIXED_IO, DDR" apply_board_preset "1" Master "Disable" Slave "Disable" }  [get_bd_cells processing_system7_0]`
+4. `apply_bd_automation -rule xilinx.com:bd_rule:processing_system7 -config {make_external "FIXED_IO, DDR" apply_board_preset "1" Master "Disable" Slave "Disable" }  [get_bd_cells processing_system7_0]`
